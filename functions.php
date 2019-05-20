@@ -179,7 +179,7 @@ add_action('myli_wp_loaded', function(){
 				 
 				}
 
-				if(!$allow){
+				if(!$allow || !current_user_can('editor')){
 					return "You do not have permission to view this post";
 				}
 					
