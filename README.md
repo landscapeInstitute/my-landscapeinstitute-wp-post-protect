@@ -1,5 +1,5 @@
 
-# MyLI WP Extension Post ProtectPlugin
+# MyLI WP Extension Post Protect Plugin
 
 ## Introduction
 

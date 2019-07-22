@@ -1,7 +1,7 @@
 <?php
 
 /*
-Plugin Name: Landscape Institute | MyLI Post Protector
+Plugin Name: Landscape Institute | MyLI Post Protect
 Plugin URI: https://www.landscapeinstitute.org
 Description: Protect Posts by limiting their access using MyLI Permissions and oAuth Tokens
 Version: 1.2
@@ -12,6 +12,23 @@ Author URI: http://www.landscapeinstitute.org
 	Copyright 2019 Landscape Institute (email : louisvarley@googlemail.com)
 	Licensed under the GPLv2 license: http://www.gnu.org/licenses/gpl-2.0.html
 */
+
+/********************************************************************************/
+/* Handles Plugin Updates */
+/********************************************************************************/
+
+require 'plugin-update-checker/plugin-update-checker.php';
+$updater = Puc_v4_Factory::buildUpdateChecker(
+	'https://github.com/landscapeInstitute/my-landscapeinstitute-wp-post-protect',
+	__FILE__,
+	'my-landscapeinstitute-wp-post-protect'
+);
+
+$updater->setAuthentication(' 080fbc77d80856fe7d1d7608ff5dc42c38bf8081 ');
+$updater->setBranch('master');
+/***************************************/
+
+
 
 register_activation_hook(__FILE__, function(){
     
@@ -44,7 +61,7 @@ add_action('myli_wp_loaded', function(){
 				return;
 			}
 			
-			$permissions = $this->api->app->listpermissions->query();
+			$permissions = $this->myli->api->app->listpermissions->query();
 			
 			foreach ($permissions as $permission) {
 				if( isset( $_POST['restrict-myli-' . $permission->id ] ) ) {
@@ -53,6 +70,7 @@ add_action('myli_wp_loaded', function(){
 					update_post_meta( $post_id, 'restrict-myli-' . $permission->id, 'no' );	
 				}
 			}
+			
 		}
 
 		/* When to Display the Meta Box */
@@ -69,7 +87,7 @@ add_action('myli_wp_loaded', function(){
 			<div class="prfx-row-content">
 				<?php
 
-				$permissions = $this->api->app->listpermissions->query();
+				$permissions = $this->myli->api->app->listpermissions->query();
 					foreach ($permissions as $permission) {	
 						$permissionMeta = $meta['restrict-myli-' . $permission->id][0]; ?>
 						<label for="restrict-myli-to-<?php echo $permission->id ?>">
@@ -135,10 +153,6 @@ add_action('myli_wp_loaded', function(){
 
 			if(empty($post->ID)){return false;}
 			
-			//if(!in_array(get_post_type($id),array('page','post','knowledgebase'))){
-				//return false;
-			//}
-
 			/* Loops all meta and looks for a restrict that is protected == yes */
 			foreach(get_post_meta($post->ID) as $key=>$meta){
 				if (strpos($key, 'restrict-myli') !== false) {	
@@ -150,7 +164,6 @@ add_action('myli_wp_loaded', function(){
 			
 			return $permissions;
 			
-		
 		}
 		
 		/* Displays either full content or redirects */
@@ -158,21 +171,16 @@ add_action('myli_wp_loaded', function(){
 
 			/* This runs is the content is protected and there is not a valid session for MyLI */
 			if ($this->isContentProtected()) {
+		
+				if(!$this->myli->has_access_token()){
+					$this->myli->get_access_token();
+				}
 
-				if(myLISession::exists('access_token')){
-					$this->set_access_token(myLISession::load('access_token'));
-				}
-				
-				if(!$this->is_authenticated()){
-					$this->get_access_token();
-					wp_die();
-				}
-	
 				$permissions = $this->getPostPermissions();
 				
 				foreach($permissions as $permission){
-					
-				    if($this->api->me->haspermission->query(array('permissionID'=>$permission))){
+
+				    if($this->myli->api->me->haspermission->query(array('permissionID'=>$permission))){
 				       $allow = true;
 					   break;
 					}
@@ -189,7 +197,8 @@ add_action('myli_wp_loaded', function(){
 		
 	}
 
-		$my_li_protection = new myli_wp_protection();
-	});
+	$my_li_protection = new myli_wp_protection();
+	
+});
 
 ?>
