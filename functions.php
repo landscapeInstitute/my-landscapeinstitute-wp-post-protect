@@ -1,8 +1,8 @@
 <?php
 
 /*
-Plugin Name: Landscape Institute | MyLI Post Protect
-Plugin URI: https://www.landscapeinstitute.org
+Plugin Name: Landscape Institute | MyLI WP Post Protect
+Plugin URI: https://github.com/landscapeInstitute/my-landscapeinstitute-wp-post-protect
 Description: Protect Posts by limiting their access using MyLI Permissions and oAuth Tokens
 Version: 1.2
 Author: Louis Varley
@@ -17,18 +17,11 @@ Author URI: http://www.landscapeinstitute.org
 /* Handles Plugin Updates */
 /********************************************************************************/
 
-require 'plugin-update-checker/plugin-update-checker.php';
-$updater = Puc_v4_Factory::buildUpdateChecker(
-	'https://github.com/landscapeInstitute/my-landscapeinstitute-wp-post-protect',
-	__FILE__,
-	'my-landscapeinstitute-wp-post-protect'
-);
+require('updater.php');
 
-$updater->setAuthentication(' 080fbc77d80856fe7d1d7608ff5dc42c38bf8081 ');
-$updater->setBranch('master');
-/***************************************/
-
-
+add_action('admin_init',function(){
+	new WP_GitHub_Updater(__FILE__);
+});
 
 register_activation_hook(__FILE__, function(){
     
