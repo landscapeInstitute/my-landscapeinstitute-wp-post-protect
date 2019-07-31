@@ -1,5 +1,7 @@
 <?php
 
+if(class_exists('WP_GitHub_Updater')) return;
+
 class WP_GitHub_Updater{
 	
 	private $file;
