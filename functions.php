@@ -4,7 +4,7 @@
 Plugin Name: Landscape Institute | MyLI WP Post Protect
 Plugin URI: https://github.com/landscapeInstitute/my-landscapeinstitute-wp-post-protect
 Description: Protect Posts by limiting their access using MyLI Permissions and oAuth Tokens
-Version: 1.2
+Version: 1.4
 Author: Louis Varley
 Author URI: http://www.landscapeinstitute.org
 */
@@ -25,28 +25,27 @@ add_action('admin_init',function(){
 
 register_activation_hook(__FILE__, function(){
     
-    if ( !class_exists('myli_wp' ) ) {
-        echo '<h3>'.__('MyLI API and oAuth2.0 is required for this plugin');
-        @trigger_error(__('MyLI API and oAuth2.0 is required for this plugin.', 'ap'), E_USER_ERROR);
+    if ( !class_exists( 'myli_wp' ) ) {
+        echo '<h3>'.__('MyLI_WP Plugin is required for this plugin to function');
+        @trigger_error(__('MyLI_WP Plugin is required for this plugin to function.', 'ap'), E_USER_ERROR);
     }
 });
 
 /* Initialise Plugin */
-add_action('myli_wp_loaded', function(){
+add_action('myli_wp_init', function(){
 
 	/* Setup the Post Protect */
-	class myli_wp_protection extends myli_wp{
+	class myli_wp_protection {
 		
-		/* call after_load to load our new functions after myli_wp starts */
-		function after_load(){
-	   
-			add_action( 'add_meta_boxes', array($this,'adminMetaBox') );
-			add_action( 'save_post', array($this,'postSave') );		
-			add_action( 'template_redirect', array($this,'protectContent') );
-		}
+		function __construct(){
+			
+			add_action( 'add_meta_boxes', array($this,'admin_meta_box') );
+			add_action( 'save_post', array($this,'post_save') );		
+			add_action( 'template_redirect', array($this,'protect_content') );
+		}		
 		
 		/* When a post is saved, this saves the restrictions to post meta */
-		function postSave( $post_id ) {
+		public function post_save( $post_id ) {
 		 
 			$is_valid_nonce = ( isset( $_POST[ 'prfx_nonce' ] ) && wp_verify_nonce( $_POST[ 'prfx_nonce' ], basename( __FILE__ ) ) ) ? 'true' : 'false';
 		 
@@ -54,7 +53,7 @@ add_action('myli_wp_loaded', function(){
 				return;
 			}
 			
-			$permissions = $this->myli->api->app->listpermissions->query();
+			$permissions = myli_wp()->api->app->listpermissions->query();
 			
 			foreach ($permissions as $permission) {
 				if( isset( $_POST['restrict-myli-' . $permission->id ] ) ) {
@@ -67,20 +66,19 @@ add_action('myli_wp_loaded', function(){
 		}
 
 		/* When to Display the Meta Box */
-		function adminMetaBox() {
-			add_meta_box( 'prfx_meta', __( 'Restrict using MyLI Permissions', 'dynamics-textdomain' ), array($this,'adminMetaCallback'), $this->get_current_post_type(), 'side', 'high' );
-			
+		public function admin_meta_box() {
+				add_meta_box( 'prfx_meta', __( 'Restrict using MyLI Permissions', 'dynamics-textdomain' ), array($this,'admin_meta_callback'), $this->get_current_post_type(), 'side', 'high' );
 		}
 		
 		/* Output Meta Box Content */
-		function adminMetaCallback( $post ) {
+		function admin_meta_callback( $post ) {
 			wp_nonce_field( basename( __FILE__ ), 'prfx_nonce' );
 			$meta = get_post_meta( $post->ID );
 			?>
 			<div class="prfx-row-content">
 				<?php
 
-				$permissions = $this->myli->api->app->listpermissions->query();
+				$permissions = myli_wp()->api->app->listpermissions->query();
 					foreach ($permissions as $permission) {	
 						$permissionMeta = $meta['restrict-myli-' . $permission->id][0]; ?>
 						<label for="restrict-myli-to-<?php echo $permission->id ?>">
@@ -113,29 +111,29 @@ add_action('myli_wp_loaded', function(){
 		
 		function get_current_post_type() {
 			
-		  global $post, $typenow, $current_screen;
-		  //we have a post so we can just get the post type from that
-		  if ( $post && $post->post_type ) {
-			return $post->post_type;
-		  }
-		  //check the global $typenow - set in admin.php
-		  elseif ( $typenow ) {
-			return $typenow;
-		  }
-		  //check the global $current_screen object - set in sceen.php
-		  elseif ( $current_screen && $current_screen->post_type ) {
-			return $current_screen->post_type;
-		  }
-		  //check the post_type querystring
-		  elseif ( isset( $_REQUEST['post_type'] ) ) {
-			return sanitize_key( $_REQUEST['post_type'] );
-		  }
-		  //lastly check if post ID is in query string
-		  elseif ( isset( $_REQUEST['post'] ) ) {
-			return get_post_type( $_REQUEST['post'] );
-		  }
-		  //we do not know the post type!
-		  return null;
+			global $post, $typenow, $current_screen;
+			//we have a post so we can just get the post type from that
+			if ( $post && $post->post_type ) {
+				return $post->post_type;
+			}
+			//check the global $typenow - set in admin.php
+			elseif ( $typenow ) {
+				return $typenow;
+			}
+			//check the global $current_screen object - set in sceen.php
+			elseif ( $current_screen && $current_screen->post_type ) {
+				return $current_screen->post_type;
+			}
+			//check the post_type querystring
+			elseif ( isset( $_REQUEST['post_type'] ) ) {
+				return sanitize_key( $_REQUEST['post_type'] );
+			}
+			//lastly check if post ID is in query string
+			elseif ( isset( $_REQUEST['post'] ) ) {
+				return get_post_type( $_REQUEST['post'] );
+			}
+			//we do not know the post type!
+			return null;
 		}    
 		
 		function getPostPermissions(){
@@ -160,20 +158,20 @@ add_action('myli_wp_loaded', function(){
 		}
 		
 		/* Displays either full content or redirects */
-		function protectContent() {
+		function protect_content() {
 
 			/* This runs is the content is protected and there is not a valid session for MyLI */
 			if ($this->isContentProtected()) {
 		
-				if(!$this->myli->has_access_token()){
-					$this->myli->get_access_token();
+				if(!myli_wp()->has_access_token()){
+					myli_wp()->get_access_token();
 				}
 
 				$permissions = $this->getPostPermissions();
 				
 				foreach($permissions as $permission){
 
-				    if($this->myli->api->me->haspermission->query(array('permissionID'=>$permission))){
+				    if(myli_wp()->api->me->haspermission->query(array('permissionID'=>$permission))){
 				       $allow = true;
 					   break;
 					}

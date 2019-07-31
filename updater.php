@@ -49,7 +49,7 @@ if(!class_exists('WP_GitHub_Updater')){
 				if($this->current_version < $this->remote_version){
 					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">New Update Available ' . $this->remote_version  . '</a>';
 				}else{
-					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">Download ' . $this->remote_version  . '</a>';
+					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">Reinstall ' . $this->remote_version  . '</a>';
 				}
 			}
 		 
