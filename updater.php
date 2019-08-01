@@ -8,8 +8,6 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function __construct($file){
 			
-			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'wp-admin') !== false){
-			
 			if ( is_admin() ||  wp_doing_ajax() ) {
 			
 				$this->file = $file;
@@ -44,10 +42,6 @@ if(!class_exists('WP_GitHub_Updater')){
 					add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
 				}
 				
-				
-								
-
-			
 			}
 			
 		}
