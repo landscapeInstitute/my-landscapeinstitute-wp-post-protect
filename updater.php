@@ -75,7 +75,7 @@ if(!class_exists('WP_GitHub_Updater')){
 				));
 
 				if(version_compare($this->remote_version,$this->current_version) > 0){
-					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">New Update Available v' . $this->remote_version  . '</a>';
+					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">Update Available v' . $this->remote_version  . '</a>';
 				}else{
 					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">Reinstall v' . $this->remote_version  . '</a>';
 				}
@@ -159,14 +159,14 @@ if(!class_exists('WP_GitHub_Updater')){
 					}
 					
 					unlink($destination);
-					
+					echo 'success! redirecting...';
 					wp_redirect( admin_url( 'plugins.php?updater=success&name=' . urlencode($this->name) ));
 					exit;
 				
 				}
 				
 				catch (Exception $e){
-					
+					echo 'fail! redirecting...';
 					wp_redirect( admin_url( 'plugins.php?updater=fail&name=' . urlencode($this->name) ));
 					exit;
 					
