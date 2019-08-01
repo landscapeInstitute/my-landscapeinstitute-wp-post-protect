@@ -1,16 +1,20 @@
 <?php
 
 if(!class_exists('WP_GitHub_Updater')){
-
+	
 	class WP_GitHub_Updater{
 		
 		private $file;
 		
 		function __construct($file){
 			
+			add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
+			
 			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'plugins.php') !== false){
 				
-
+				add_action( 'admin_notices', array($this,'show_messages') );
+				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+				
 				$this->file = $file;
 				
 				$this->master_file = basename($file);
@@ -35,10 +39,8 @@ if(!class_exists('WP_GitHub_Updater')){
 
 				$this->branch = (isset($this->local_meta['Branch']) ? $this->local_meta['Branch'] : "master");		
 
-				add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );
-				add_action( 'admin_notices', array($this,'show_messages') );
+				
 
-				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
 			
 			}
 			
@@ -71,7 +73,7 @@ if(!class_exists('WP_GitHub_Updater')){
 				
 				$query = http_build_query(array(
 					'action'=>'plugin_updater',
-					'file'=>urlencode($this->file),
+					//'repo'=>urlencode($this->github_repo),
 				));
 
 				if(version_compare($this->remote_version,$this->current_version) > 0){
@@ -124,9 +126,11 @@ if(!class_exists('WP_GitHub_Updater')){
 		}
 		
 		function ajax_plugin_updater(){
-			
-		
-			if($this->file == urldecode($_GET['file'])){
+
+			echo 'clock';
+			die();
+
+			if($this->github_repo == urldecode($_GET['repo'])){
 
 				try{
 
