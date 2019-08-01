@@ -127,9 +127,6 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function ajax_plugin_updater(){
 
-			echo 'clock';
-			die();
-
 			if($this->github_repo == urldecode($_GET['repo'])){
 
 				try{
