@@ -46,8 +46,7 @@ if(!class_exists('WP_GitHub_Updater')){
 					'file'=>urlencode($this->file),
 				));
 
-
-				if(version_compare($this->current_version,$this->remote_version) > 0){
+				if(version_compare($this->remote_version,$this->current_version) > 0){
 					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">New Update Available v' . $this->remote_version  . '</a>';
 				}else{
 					$links_array[] = '<a class="button button-small button-primary" href="' . admin_url('admin-ajax.php?') . $query . '">Reinstall v' . $this->remote_version  . '</a>';
