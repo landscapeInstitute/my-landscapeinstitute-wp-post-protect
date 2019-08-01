@@ -8,34 +8,62 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function __construct($file){
 			
-			$this->file = $file;
-			
-			$this->master_file = basename($file);
-			
-			$this->folder = dirname($this->file);
-			
-			$this->local_meta = \get_plugin_data($this->file);
-			
-			$this->name = $this->local_meta['Name'];
-			
-			$this->github_repo = str_replace('https://github.com/','',$this->local_meta['PluginURI']);
-			
-			$this->current_version = $this->local_meta['Version'];
-			
-			$this->remote_meta = \get_plugin_data('https://raw.githubusercontent.com/' . $this->github_repo . '/master/' . $this->master_file);
-		
-			$this->remote_version = $this->remote_meta['Version'];
+			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'plugins.php') !== false){
+				
 
-			$this->branch = (isset($this->local_meta['Branch']) ? $this->local_meta['Branch'] : "master");		
+				$this->file = $file;
+				
+				$this->master_file = basename($file);
+				
+				$this->folder = dirname($this->file);
+				
+				$this->local_meta = \get_plugin_data($this->file);
+				
+				$this->name = $this->local_meta['Name'];
+				
+				$this->github_repo = str_replace('https://github.com/','',$this->local_meta['PluginURI']);
+				
+				$this->current_version = $this->local_meta['Version'];
 
+				$this->remote_master_file = 'https://raw.githubusercontent.com/' . $this->github_repo . '/master/' . $this->master_file;
+				
+				if(!$this->url_exists($this->remote_master_file)) return false;
+				
+				$this->remote_meta = \get_plugin_data($this->remote_master_file);
 			
-			add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );
-			add_action( 'admin_notices', array($this,'show_messages') );
+				$this->remote_version = $this->remote_meta['Version'];
 
-			add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+				$this->branch = (isset($this->local_meta['Branch']) ? $this->local_meta['Branch'] : "master");		
 
+				add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );
+				add_action( 'admin_notices', array($this,'show_messages') );
+
+				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+			
+			}
+			
 		}
-		
+				
+
+
+		function url_exists($URL)
+		{
+			
+			$exists = true;
+			$file_headers = @get_headers($URL);
+			$InvalidHeaders = array('404', '403', '500');
+			foreach($InvalidHeaders as $HeaderVal)
+			{
+					if(strstr($file_headers[0], $HeaderVal))
+					{
+							$exists = false;
+							break;
+					}
+			}
+			return $exists;
+		}
+
+
 		
 		function updater_links( $links_array, $plugin_file_name ){
 		 		
