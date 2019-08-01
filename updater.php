@@ -8,12 +8,7 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function __construct($file){
 			
-			add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
-			
-			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'plugins.php') !== false){
-				
-				add_action( 'admin_notices', array($this,'show_messages') );
-				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'wp-admin') !== false){
 				
 				$this->file = $file;
 				
@@ -38,8 +33,11 @@ if(!class_exists('WP_GitHub_Updater')){
 				$this->remote_version = $this->remote_meta['Version'];
 
 				$this->branch = (isset($this->local_meta['Branch']) ? $this->local_meta['Branch'] : "master");		
-
 				
+				add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
+				add_action( 'admin_notices', array($this,'show_messages') );
+				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+								
 
 			
 			}
@@ -88,9 +86,9 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function show_messages(){
 			
-			if(isset($_GET['updater']) && isset($_GET['name'])){
+			if(isset($_GET['updater']) && isset($_GET['repo'])){
 				
-				if(urldecode($_GET['name']) != $this->name) return false;
+				if(urldecode($_GET['repo']) != $this->github_repo) return false;
 				
 				if($_GET['updater'] == 'fail'){
 					$class = 'notice notice-error';
@@ -161,14 +159,14 @@ if(!class_exists('WP_GitHub_Updater')){
 					
 					unlink($destination);
 					echo 'success! redirecting...';
-					wp_redirect( admin_url( 'plugins.php?updater=success&name=' . urlencode($this->name) ));
+					wp_redirect( admin_url( 'plugins.php?updater=success&repo=' . urlencode($this->github_repo) ));
 					exit;
 				
 				}
 				
 				catch (Exception $e){
 					echo 'fail! redirecting...';
-					wp_redirect( admin_url( 'plugins.php?updater=fail&name=' . urlencode($this->name) ));
+					wp_redirect( admin_url( 'plugins.php?updater=fail&repo=' . urlencode($this->github_repo) ));
 					exit;
 					
 				}
