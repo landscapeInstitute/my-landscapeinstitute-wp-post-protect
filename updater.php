@@ -9,7 +9,9 @@ if(!class_exists('WP_GitHub_Updater')){
 		function __construct($file){
 			
 			if(strpos('http://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],'wp-admin') !== false){
-				
+			
+			if ( is_admin() ||  wp_doing_ajax() ) {
+			
 				$this->file = $file;
 				
 				$this->master_file = basename($file);
@@ -34,9 +36,15 @@ if(!class_exists('WP_GitHub_Updater')){
 
 				$this->branch = (isset($this->local_meta['Branch']) ? $this->local_meta['Branch'] : "master");		
 				
-				add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
 				add_action( 'admin_notices', array($this,'show_messages') );
 				add_filter( 'plugin_row_meta', array($this,'updater_links'), 10, 2 );
+				
+				if ( wp_doing_ajax() )
+				{
+					add_action( 'wp_ajax_plugin_updater',array($this, 'ajax_plugin_updater') );	
+				}
+				
+				
 								
 
 			
