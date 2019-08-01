@@ -58,7 +58,9 @@ if(!class_exists('WP_GitHub_Updater')){
 		
 		function show_messages(){
 			
-			if(isset($_GET['updater'])){
+			if(isset($_GET['updater']) && isset($_GET['name'])){
+				
+				if(urldecode($_GET['name']) != $this->name) return false;
 				
 				if($_GET['updater'] == 'fail'){
 					$class = 'notice notice-error';
@@ -130,14 +132,14 @@ if(!class_exists('WP_GitHub_Updater')){
 					
 					unlink($destination);
 					
-					wp_redirect( admin_url('plugins.php?updater=success') );
+					wp_redirect( admin_url( 'plugins.php?updater=success&name=' . urlencode($this->name) ));
 					exit;
 				
 				}
 				
 				catch (Exception $e){
 					
-					wp_redirect( admin_url('plugins.php?updater=fail') );
+					wp_redirect( admin_url( 'plugins.php?updater=fail&name=' . urlencode($this->name) ));
 					exit;
 					
 				}
