@@ -4,7 +4,7 @@
 Plugin Name: Landscape Institute | MyLI WP Post Protect
 Plugin URI: https://github.com/landscapeInstitute/my-landscapeinstitute-wp-post-protect
 Description: Protect Posts by limiting their access using MyLI Permissions and oAuth Tokens
-Version: 2.0
+Version: 2.1
 Author: Louis Varley
 Author URI: http://www.landscapeinstitute.org
 */
