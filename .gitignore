@@ -1,4 +1,2 @@
-
 /vendor/**/*.git
 *.lock
-vendor/landscapeinstitute/wp-github-plugin-updater/
