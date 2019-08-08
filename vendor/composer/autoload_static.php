@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4c14dc2ad68637d3ce2d1b1b586ae5b6
+class ComposerStaticInit0bbc7cf82fa5397b80133a59d8bd6c48
 {
     public static $files = array (
         '673d02b57df8f6d75b622cf6030bc00b' => __DIR__ . '/..' . '/landscapeinstitute/wp-github-plugin-updater/updater.php',
