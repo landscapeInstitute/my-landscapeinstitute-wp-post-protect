@@ -44,15 +44,4 @@ sed -i "7s/.*/$version/" functions.php
 git add functions.php
 git commit -m "$version" -m "";
 
-#Composer UPDATE
-composer update
-
-#Remove any GIT Folders
-find vendor -type d -name ".git" -exec rm -rf {} \;
-find vendor -type d -name ".githooks" -exec rm -rf {} \;
-
-#Add All Changes
-git add -A 
-
-#Commit All Changes
-git diff-index --cached --quiet HEAD || git commit -m "Composer Auto Commit Updates"
+sh .composer.sh

@@ -1,3 +1,7 @@
+
+#Clear Vendor
+rm -rf vendor/
+
 #Composer UPDATE
 composer update
 
