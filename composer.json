@@ -1,0 +1,12 @@
+{
+    "repositories": [
+        {
+            "url": "https://github.com/landscapeInstitute/wp-github-plugin-updater",
+            "type": "git"
+        }	
+    ],
+    "require": {
+        "landscapeinstitute/wp-github-plugin-updater": "dev-master"		
+    }
+	
+}

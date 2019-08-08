@@ -1,0 +1,52 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "fda22b6e7dafb0c6f3144dba30741dd6",
+    "packages": [
+        {
+            "name": "landscapeinstitute/wp-github-plugin-updater",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/landscapeInstitute/wp-github-plugin-updater",
+                "reference": "e8e7f1012dc2e08edd2afa5e8f7ae5c7c7c04e02"
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "updater.php"
+                ],
+                "exclude-from-classmap": [
+                    "/.git",
+                    "/.githooks"
+                ]
+            },
+            "authors": [
+                {
+                    "name": "Louis Varley",
+                    "email": "louis.varley@landscapeinstitute.org",
+                    "homepage": "https://www.landscapeinstitute.org"
+                }
+            ],
+            "description": "A simple GitHub Wordpress Plugin Updater which does not use the core updater framework",
+            "homepage": "https://github.com/landscapeInstitute/wp-github-plugin-updater",
+            "time": "2019-08-08T14:51:45+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "landscapeinstitute/wp-github-plugin-updater": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

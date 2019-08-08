@@ -17,7 +17,8 @@ Author URI: http://www.landscapeinstitute.org
 /* Handles Plugin Updates */
 /********************************************************************************/
 
-require('updater.php');
+/* Include Composer */
+require(plugin_dir_path(__FILE__) . 'vendor/autoload.php');
 
 add_action('admin_init',function(){
 	new WP_GitHub_Updater(__FILE__);

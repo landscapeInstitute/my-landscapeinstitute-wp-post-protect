@@ -44,3 +44,6 @@ sed -i "7s/.*/$version/" functions.php
 git add functions.php
 git commit -m "$version" -m "";
 
+composer update
+git add -A 
+git diff-index --cached --quiet HEAD || git commit -m "Composer Auto Commit Updates"
