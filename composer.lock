@@ -12,7 +12,7 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/landscapeInstitute/wp-github-plugin-updater",
-                "reference": "e8e7f1012dc2e08edd2afa5e8f7ae5c7c7c04e02"
+                "reference": "d8da3567d532b6e45215f9c1fed34de5393122fb"
             },
             "require": {
                 "php": ">=5.6"
@@ -36,7 +36,7 @@
             ],
             "description": "A simple GitHub Wordpress Plugin Updater which does not use the core updater framework",
             "homepage": "https://github.com/landscapeInstitute/wp-github-plugin-updater",
-            "time": "2019-08-08T14:51:45+00:00"
+            "time": "2019-08-08T15:25:32+00:00"
         }
     ],
     "packages-dev": [],
