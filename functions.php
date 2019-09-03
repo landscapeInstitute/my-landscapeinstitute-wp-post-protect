@@ -40,6 +40,10 @@ add_action('myli_wp_init', function(){
 		
 		function __construct(){
 			
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+			}
+			
 			add_action( 'add_meta_boxes', array($this,'admin_meta_box') );
 			add_action( 'save_post', array($this,'post_save') );		
 			add_action( 'template_redirect', array($this,'protect_content') );
@@ -163,7 +167,7 @@ add_action('myli_wp_init', function(){
 
 			/* This runs is the content is protected and there is not a valid session for MyLI */
 			if ($this->isContentProtected()) {
-		
+					
 				if(!myli_wp()->has_access_token()){
 					myli_wp()->get_access_token();
 				}
