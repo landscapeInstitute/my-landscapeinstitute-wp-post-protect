@@ -165,6 +165,9 @@ add_action('myli_wp_init', function(){
 		/* Displays either full content or redirects */
 		function protect_content() {
 
+			if (!session_id())
+				session_start();
+
 			/* This runs is the content is protected and there is not a valid session for MyLI */
 			if ($this->isContentProtected()) {
 					
